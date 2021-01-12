@@ -1,0 +1,19 @@
+{
+  "name": "interactiv-back",
+  "version": "1.0.0",
+  "description": "年会抽奖用后台",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "OHS",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@cloudbase/node-sdk": "latest",
+    "cookie-session": "^1.4.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "socket.io": "^3.0.4",
+    "ws": "^7.4.1"
+  }
+}

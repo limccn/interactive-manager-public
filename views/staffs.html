@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>社员管理</title>
+    <!-- Bootstrap core CSS -->
+    <link href="/public/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      .btn-group-lg>.btn, .btn-lg{
+        font-size:3rem;
+        width:180px;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="/public/css/dashboard.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">忘年会</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="/login/">Sign out</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/config/index/">
+              Dashboard 
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config/index/">
+              当前活动
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config/processing_staff/">
+              参与员工
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/config/staffs/">
+              社员管理 <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config/system/">
+              系统管理
+            </a>
+          </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>抽奖界面</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery_ohs/">
+              上海
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery_jhg/">
+              南通
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery/">
+              返场奖
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery_viewer/">
+              参加人数仪表
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <div id="alert" class="alert">
+    </div>
+    <h1 class="h2">社员管理</h1>
+    <div class="row my-2">
+        <div class="col-2">
+            <div class="form-group">
+                <label for="selCompany">公司:</label>
+                <select class="form-control" id="selCompany">
+                    <option value=''></option>
+                    <option value='OHS'>OHS</option>
+                    <option value='JHG'>JHG</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <label for="selBSE">BSE:</label>
+                <select class="form-control" id="selBSE">
+                    <option value=''></option>
+                    <option value='true'>〇</option>
+                    <option value='false'>✕</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <label for="selTimes">剩余次数:</label>
+                <select class="form-control" id="selTimes">
+                    <option value=''></option>
+                    <option value='3'>3</option>
+                    <option value='2'>2</option>
+                    <option value='1'>1</option>
+                    <option value='0'>0</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                <label for="selWinning">获奖:</label>
+                <select class="form-control" id="selWinning">
+                    <option value=''></option>
+                    <option value='true'>〇</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-2">
+            <button id="btnSearch" class="btn btn-primary px-4 mt-4" type="button">检索</button>
+        </div>
+    </div>
+    <div class="row">
+    <div class="col-12">
+    <table id="tblStaffs" class="table table-striped table-hover table-sm mt-4">
+        <thead>
+        <tr>
+            <th></th>
+            <th>#</th>
+            <th>公司</th>
+            <th>员工号</th>
+            <th>姓名</th>
+            <th>头像</th>
+            <th>BSE</th>
+            <th>剩余次数</th>
+            <th>获奖</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+    </div>
+</body>
+<script src="/public/js/jquery-3.4.1.min.js"></script>
+<script src="/public/js/ajax-form.js"></script>
+<script src="/public/js/bootstrap.min.js"></script>
+<script src="/public/js/prettify-min.js"></script>
+<script src="/public/js/common.js"></script>
+<script>
+    $("#btnSearch").click(function(){
+        let params = {};
+        if($('#selCompany').val()!==''){
+            params.company = $('#selCompany').val();
+        }
+        
+        if($('#selBSE').val()=='true'){
+            params.is_bse = true;
+        }
+        else if($('#selBSE').val()=='false'){
+            params.is_bse = false;
+        }
+        
+        if($('#selTimes').val()!==''){
+            params.times = $('#selTimes').val();
+        }
+
+        if($('#selWinning').val()!==''){
+            params.winning = true;
+        }
+
+        getJSON('staffs/',params).done(function (data) {
+            var html = "";
+            for(var i=0;i<data.length;i++){
+
+                html = html +  "<tr>";
+                html = html +  "<td><input type='checkbox' id='" + data[i]._id + "'></td>";
+                html = html +  "<td>" + (i+1) + "</td>";
+                html = html +  "<td>" + data[i].company + "</td>";
+                html = html +  "<td>" + data[i]._id + "</td>";
+                html = html +  "<td>" + data[i].name + "</td>";
+                html = html +  "<td>"
+                if(data[i].avatar!=="" && data[i].avatar !== undefined){
+                    html = html +  "<image src='" + data[i].avatar + "' width='25px' >"
+                }
+                html = html +  "</td>";
+                html = html +  "<td>"
+                if(data[i].is_bse){
+                    html = html +  "〇"
+                }
+                html = html +  "</td>";
+                html = html +  "<td>" + (data[i].times==undefined?'':data[i].times) + "</td>";
+                html = html +  "<td>" + (data[i].prize_name==undefined?'':data[i].prize_name) + "</td>";
+                
+                html = html +  "</tr>";
+            }
+            $("#tblStaffs tbody").html(html);
+        })
+        .fail(function (response, status) {
+            //handle error response
+        })
+        .always(function(){
+            //do something useful in either case
+        });
+    })
+
+</script>
+</html>

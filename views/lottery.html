@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Lottery</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
+    <meta name="format-detection" content="telephone=no" />
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background:#4f4f4f;
+        }
+        .lotterybox{
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="lottery-box"></div>
+
+    <!-- Zepto or jQuery -->
+    <script src="/public/js/jquery-3.4.1.min.js"></script>
+
+    <link rel="stylesheet" href="/public/css/lottery.css" />
+    <script src="/public/js/lottery.compact.min.js"></script>
+    <script src="/public/js/lottery.js"></script>
+    <script src="/public/js/common.js"></script>
+
+    <!-- ROCK ON -->
+    <script>
+        $(document).ready(function() {
+            getProcessingData();
+        });
+
+        function getProcessingData() {
+            let param = {};
+            param['company'] = '';
+            getJSON('processing_staff/',param).done(function (data) {
+                let len = data.length;
+
+                let content = new Array();
+                for(var i=0;i<len;i++){
+                    let el = {
+                        'avatar': data[i].avatar,
+                        'name': data[i].name,
+                        'data': {
+                            'staff': data[i].staff_id
+                        }
+                    };
+                    content.push(el);
+                }
+                let width = 120;
+                switch(Math.floor(len/28)) {
+                    case 0:
+                        width = 88;
+                        break;
+                    case 1:
+                        width = 88;
+                        break;
+                    case 2:
+                        width = 78;
+                        break;
+                    case 3:
+                        width = 68;
+                        break;
+                    case 4:
+                        width = 58;
+                        break;
+                    case 5:
+                        width = 48;
+                        break;
+                    default:
+                        width = 38;
+                }
+                $.lottery({
+                    el: '.lottery-box',
+                    data: content,
+                    once: true,
+                    subtitle: "staff",
+                    confetti: true,
+                    timeout: 5,
+                    speed: 200,
+                    number: 1,
+                    width: width,
+                    done: function (winnerHistory) {
+                        if (confirm('同步抽奖结果?')==true){
+                            let postData = new Array();
+                            //handle winners
+                            for (var h in winnerHistory){
+                                let records = winnerHistory[h];
+                                for (var r in records){
+                                    if(typeof(records[r]) != 'object'){
+                                        continue;
+                                    }
+                                    let winners = records[r];
+                                    for (var w in winners){
+                                        postData.push(winners[w].data.staff);
+                                    }
+                                }
+                            }
+                            postWinningData(postData, winnerHistory);
+                        }
+                    }
+                });
+            }).fail(function (response, status) {
+                //handle error response
+                alert("获取员工data失败");
+            }).always(function(){
+                //do something useful in either case
+            });
+        }
+
+        function postWinningData(winners, winnerHistory) {
+            postJSON('lottery/', {'lottery_staffs': winners}).done(function (winners) {
+                $.lottery('clear');
+            }).fail(function (response, status) {
+                //handle error response
+                alert("同步入围员工失败");
+            }).always(function(){
+                $(".lottery-box").html("");
+                getProcessingData();
+            });
+        }
+    </script>
+</body>
+</html>

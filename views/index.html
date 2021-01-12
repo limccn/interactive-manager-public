@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>当前活动</title>
+    <!-- Bootstrap core CSS -->
+    <link href="/public/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      .btn-group-lg>.btn, .btn-lg{
+        font-size:3rem;
+        width:180px;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="/public/css/dashboard.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">忘年会</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="/login/">Sign out</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/config/index/">
+              Dashboard 
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/config/index/">
+              当前活动 <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config/processing_staff/">
+              参与员工
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config/staffs/">
+              社员管理
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config/system/">
+              系统管理
+            </a>
+          </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>抽奖界面</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery_ohs/">
+              上海
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery_jhg/">
+              南通
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery/">
+              返场奖
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery_viewer/">
+              参加人数仪表
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <div id="alert" class="alert">
+    </div>
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+        <h1 class="h2">当前活动</h1>
+      </div>
+      <div class="table-responsive">
+        <table id="tblCurrentActivity" class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>状态</th>
+              <th>奖品名称</th>
+              <th>可参加</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>投票中</td>
+              <td>测试1</td>
+              <td>是</td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="stateGroup" class="btn-group btn-group-lg">
+          <button type="button" class="btn btn-light">投票</button>
+          <button type="button" class="btn btn-light">抽奖</button>
+          <button type="button" class="btn btn-light">小游戏</button>
+          <button type="button" class="btn btn-light">准备中</button>
+        </div>
+        <button id="btnUpdate" type="button" class="btn-lg btn-primary float-right">更新</button>
+        <br>
+        <div id="canJoinGroup"  class="btn-group btn-group-lg my-2">
+          <button id="canJoin" type="button" class="btn btn-light">报名</button>
+          <button id="cannotJoin" type="button" class="btn btn-light">截止</button>
+        </div>
+        <br>
+        <div class="my-2">
+          <button id="btnPrev" type="button" class="btn-lg btn-light">前一个</button>
+          <div style="display:inline-block;">
+            <div id="processingNumber" style="display:table;font-size:2rem;" class="mx-auto"></div>
+            <img id="imgPrize">
+            <div id="prizeName" style="display:table;font-size:2rem;" class="mx-auto"></div>
+          </div>
+          <button id="btnNext" type="button" class="btn-lg btn-light">下一个</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+<script src="/public/js/jquery-3.4.1.min.js"></script>
+<script src="/public/js/ajax-form.js"></script>
+<script src="/public/js/bootstrap.min.js"></script>
+<script src="/public/js/prettify-min.js"></script>
+<script src="/public/js/common.js"></script>
+<script>
+  var activity_id = "000";
+  var activity_name = "";
+  var can_join = false;
+  var processing_number = 0;
+  var prize_name = "";
+  var prizelist;
+
+  getJSON('prizes/').done(function (data) {
+      prizelist = data;
+  })
+  .fail(function (response, status) {
+      //handle error response
+  })
+  .always(function(){
+      //do something useful in either case
+  });
+
+  getJSON('activity/').done(function (data) {
+      activity_id = data.activity_id;
+      can_join = data.can_join;
+      processing_number = data.processing_number;
+      prize_name = data.prize_name;
+
+      if(activity_id=="000"){
+        activity_name = "投票";
+      }
+      else if(activity_id=="001"){
+        activity_name = "抽奖";
+      }
+      else if(activity_id=="002"){
+        activity_name = "小游戏";
+      }
+      else{
+        activity_name = "准备中";
+      }
+      if(can_join){
+        $("#canJoin").removeClass("btn-light").addClass("btn-dark");
+      }
+      else{
+        $("#cannotJoin").removeClass("btn-light").addClass("btn-dark");
+      }
+      for(var i=0;i<4;i++){
+        if($("#stateGroup button")[i].innerText==activity_name){
+          $("#stateGroup button")[i].click();
+        }
+      }
+      $("#imgPrize").attr("src","/public/img/02-" + processing_number + ".png");
+      $("#processingNumber").html(processing_number);
+      $("#prizeName").html(prize_name);
+
+      $("#tblCurrentActivity tbody").html("<tr><td>"+ processing_number + "</td><td>" + activity_name + "</td><td>" + prize_name + "</td><td>" + (can_join?"报名":"截止") + "</td></tr>");
+  })
+  .fail(function (response, status) {
+      //handle error response
+  })
+  .always(function(){
+      //do something useful in either case
+  });
+
+  $("#stateGroup button").click(function(){
+    $("#stateGroup button").removeClass("btn-dark").addClass("btn-light");
+    $(this).removeClass("btn-light").addClass("btn-dark");
+    var text = $("#stateGroup button.btn-dark").text();
+    if(text == "投票"){
+      activity_id = "000";
+      $("#canJoinGroup button").removeAttr("disabled");
+    }
+    else if(text == "抽奖"){
+      activity_id = "001";
+      can_join = false;
+      $("#canJoinGroup button").attr("disabled","");
+      $("#cannotJoin").removeClass("btn-light").addClass("btn-dark");
+      $("#canJoin").removeClass("btn-dark").addClass("btn-light");
+    }
+    else if(text == "小游戏"){
+      activity_id = "002";
+      can_join = false;
+      $("#canJoinGroup button").attr("disabled","");
+      $("#cannotJoin").removeClass("btn-light").addClass("btn-dark");
+      $("#canJoin").removeClass("btn-dark").addClass("btn-light");
+    }
+    else{
+      activity_id = "003";
+      can_join = false;
+      $("#canJoinGroup button").attr("disabled","");
+      $("#cannotJoin").removeClass("btn-light").addClass("btn-dark");
+      $("#canJoin").removeClass("btn-dark").addClass("btn-light");
+    }
+    console.log(activity_id);
+  })
+  $("#canJoinGroup button").click(function(){
+    $("#canJoinGroup button").removeClass("btn-dark").addClass("btn-light");
+    $(this).removeClass("btn-light").addClass("btn-dark");
+    if($("#canJoin").hasClass("btn-dark")){
+      can_join = true;
+    }
+    else{
+      can_join = false;
+    }
+  })
+  $("#btnPrev").click(function(){
+    if(processing_number>0){
+      processing_number --;
+      $("#imgPrize").attr("src","/public/img/02-" + processing_number + ".png");
+      if(prizelist[processing_number]!==undefined){
+        $("#processingNumber").html(processing_number);
+        $("#prizeName").html(prizelist[processing_number].prize_name);
+      }
+      else{
+         $("#processingNumber").html("");
+        $("#prizeName").html("");
+      }
+    }
+  })
+  
+  $("#btnNext").click(function(){
+     if(processing_number<15){
+      processing_number ++;
+      $("#imgPrize").attr("src","/public/img/02-" + processing_number + ".png");
+      if(prizelist[processing_number]!==undefined){
+        $("#processingNumber").html(processing_number);
+        $("#prizeName").html(prizelist[processing_number].prize_name);
+      }
+      else{
+        $("#processingNumber").html("");
+        $("#prizeName").html("");
+      }
+     }
+  })
+
+  $("#btnUpdate").click(function(){
+    var data = {
+      activity_id: activity_id,
+      can_join: can_join,
+      prize: $("#prizeName").html(),
+      processing_number: processing_number,
+    }
+    postJSON('message/',data).done(function (data) {
+         $("#alert").removeClass("alert-danger").addClass("alert-success").html("<strong>成功！</strong>活动内容已更新！");
+        setInterval(function(){
+            $("#alert").removeClass("alert-success").html("");
+        },10000);
+    })
+    .fail(function (response, status) {
+        $("#alert").addClass("alert-danger").removeClass("alert-success").html("<strong>失败！</strong>活动内容更新失败！请尝试刷新页面。");
+        setInterval(function(){
+          $("#alert").removeClass("alert-danger").html("");
+        },10000);
+        console.log(response)
+    })
+    .always(function(){
+        //重新获取信息
+        getJSON('activity/').done(function (data) {
+          activity_id = data.activity_id;
+          can_join = data.can_join;
+          processing_number = data.processing_number;
+          prize_name = data.prize_name;
+
+          if(activity_id=="000"){
+            activity_name = "投票";
+          }
+          else if(activity_id=="001"){
+            activity_name = "抽奖";
+          }
+          else if(activity_id=="002"){
+            activity_name = "小游戏";
+          }
+          else{
+            activity_name = "准备中";
+          }
+
+          $("#imgPrize").attr("src","/public/img/02-" + processing_number + ".png");
+          $("#processingNumber").html(processing_number);
+          $("#prizeName").html(prize_name);
+
+          $("#tblCurrentActivity tbody").html("<tr><td>"+ processing_number + "</td><td>" + activity_name + "</td><td>" + prize_name + "</td><td>" + (can_join?"报名":"截止") + "</td></tr>");
+      })
+      .fail(function (response, status) {
+
+      })
+      .always(function(){
+          //do something useful in either case
+      });
+    });
+  })
+</script>
+</html>

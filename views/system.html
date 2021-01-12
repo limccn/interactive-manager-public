@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>系统管理</title>
+    <!-- Bootstrap core CSS -->
+    <link href="/public/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      .btn-group-lg>.btn, .btn-lg{
+        font-size:3rem;
+        width:180px;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="/public/css/dashboard.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">忘年会</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="/login/">Sign out</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/config/index/">
+              Dashboard 
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config/index/">
+              当前活动
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config/processing_staff/">
+              参与员工
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/config/staffs/">
+              社员管理
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/config/system/">
+              系统管理<span class="sr-only">(current)</span>
+            </a>
+          </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>抽奖界面</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery_ohs/">
+              上海
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery_jhg/">
+              南通
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery/">
+              返场奖
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/config/lottery_viewer/">
+              参加人数仪表
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <div id="alert" class="alert">
+    </div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">系统管理</h1>
+    </div>
+    <div>
+        <h2>备份</h2>
+        <button id="btnBackup" class="btn btn-primary m-4" type="button">创建新备份</button>
+        <h2>恢复</h2>
+        <button id="btnInit" class="btn btn-primary m-4" type="button">初始化（测试确认完成后使用）</button>
+        <button id="btnReshoreInit" class="btn btn-danger m-4" type="button">恢复初始备份（慎重使用）</button>
+        <div id="reshore">
+        </div>
+    </div>
+    </main>
+  </div>
+</div>
+<div id="my-messagebox" class="modal" style="z-index:9999;display: none;" >  
+      <div class="modal-dialog  modal-dialog-centered">  
+        <div class="modal-content">
+          <div class="modal-body">
+           <div class="row mt-4">
+                <div class="col-10"><p style="line-height:40px;height:40px;overflow:hidden;">[Message]</p></div>
+           </div>
+          </div>  
+          <div class="text-center mx-auto mb-3" >  
+            <button type="button" class="btn btn-primary ok" data-dismiss="modal">[BtnOk]</button>  
+            <button type="button" class="btn btn-default cancel" data-dismiss="modal">[BtnCancel]</button>  
+          </div>  
+        </div>  
+      </div>  
+</div>
+</body>
+<script src="/public/js/jquery-3.4.1.min.js"></script>
+<script src="/public/js/ajax-form.js"></script>
+<script src="/public/js/bootstrap.min.js"></script>
+<script src="/public/js/prettify-min.js"></script>
+<script src="/public/js/common.js"></script>
+<script>
+
+  getJSON('reshorelist/').done(function (data) {
+      for(var o in data.list){
+          $("#reshore").append("<button class='btn btn-danger m-4' type='button' onclick='reshore(" + data.list[o]._id + ")'>"+ new Date(data.list[o].time).Format("yyyy-MM-dd hh:mm:ss") +"</button>");
+      }
+  })
+  .fail(function (response, status) {
+      //handle error response
+  })
+  .always(function(){
+      //do something useful in either case
+  });
+
+ $("#btnInit").click(function(){
+    messageBox.confirm('是否需要初始化投票次数和中奖情报？',init);
+  })
+
+  function init(){
+    postJSON('init/').done(function () {
+            $("#alert").removeClass("alert-danger").addClass("alert-success").html("<strong>成功！</strong>初期化成功！");
+            setInterval(function(){
+                $("#alert").removeClass("alert-success").html("");
+            },10000);
+        })
+        .fail(function (response, status) {
+            $("#alert").addClass("alert-danger").removeClass("alert-success").html("<strong>失败！</strong>初期化失败！请重试！");
+            setInterval(function(){
+              $("#alert").removeClass("alert-danger").html("");
+            },10000);
+            console.log(response)
+        })
+        .always(function(){})
+  }
+
+ $("#btnBackup").click(function(){
+    messageBox.confirm('创建新的备份？',backup);
+ })
+
+ function backup(){
+    postJSON('backup/').done(function () {
+         $("#alert").removeClass("alert-danger").addClass("alert-success").html("<strong>成功！</strong>备份成功！");
+        setInterval(function(){
+            $("#alert").removeClass("alert-success").html("");
+        },10000);
+    })
+    .fail(function (response, status) {
+        $("#alert").addClass("alert-danger").removeClass("alert-success").html("<strong>失败！</strong>备份失败！");
+        setInterval(function(){
+          $("#alert").removeClass("alert-danger").html("");
+        },10000);
+        console.log(response);
+    })
+    .always(function(){})
+ }
+
+ var reshoreParam = {}
+
+ function reshore(id){
+   reshoreParam.id = id;
+   messageBox.confirm('是否恢复？',doreshore); 
+ }
+
+ function doreshore(){
+
+    $("#alert").addClass("alert-warning").html("<strong>恢复中！</strong>请等待恢复完成！");
+    postJSON('reshore/',reshoreParam).done(function () {
+         $("#alert").removeClass("alert-warning").removeClass("alert-danger").addClass("alert-success").html("<strong>成功！</strong>数据已恢复！");
+        setInterval(function(){
+            $("#alert").removeClass("alert-success").html("");
+        },10000);
+    })
+    .fail(function (response, status) {
+        $("#alert").removeClass("alert-warning").addClass("alert-danger").removeClass("alert-success").html("<strong>失败！</strong>数据恢复失败！请重试。");
+        setInterval(function(){
+          $("#alert").removeClass("alert-danger").html("");
+        },10000);
+        console.log(response);
+    })
+    .always(function(){})
+ }
+
+$("#btnReshoreInit").click(function(){
+    reshore('');
+ })
+</script>
+</html>
