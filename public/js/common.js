@@ -187,3 +187,34 @@ function MyMessagebox(){
 
 messageBox = new MyMessagebox();
 messageBox.init();
+
+
+// Converts Text to canvas;
+function textToCanvas(char) {
+    var colors = ["#4D2DFF","#B62DFF","#FF2DDF","#FF2D76","#FFB62D","#FF4D2D","#5800D5","#C200D5","#008ED5","#0023D5","#4700D5"];
+
+    var canvas = document.createElement("canvas");
+    canvas.width = 200;
+    canvas.height = 200;
+
+    ctx = canvas.getContext("2d");
+    ctx.moveTo(0, 0);
+    ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];  //设置填充颜色
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.moveTo(100,100);
+    ctx.fillStyle = "white";              //设置填充颜色为紫色
+    ctx.font = '64px "微软雅黑"';           //设置字体
+    ctx.textBaseline = "middle";           //设置字体底线对齐绘制基线
+    ctx.textAlign = "center";              //设置字体对齐的方式
+    ctx.fillText(char,100,100);
+
+    return canvas;
+}
+
+function makeAvatarFromName(name) {
+    text = name.length <=2 ? name:name.substr(-2);
+    return textToCanvas(text).toDataURL("image/png");
+}
+
+  

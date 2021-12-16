@@ -42,7 +42,7 @@
                 let content = new Array();
                 for(var i=0;i<len;i++){
                     let el = {
-                        'avatar': data[i].avatar,
+                        'avatar': makeAvatarFromName(data[i].name),
                         'name': data[i].name,
                         'data': {
                             'staff': data[i].staff_id

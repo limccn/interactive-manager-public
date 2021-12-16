@@ -245,17 +245,26 @@ app.get('/processing_staff/',async (req, res) => {
         })
     }
     
-    //二等奖抽奖阶段，只有报名的才能参加
-    if(processing_number<=12){
-        staffs = await getProcessingStaffList(
-            {
+    //抽取所有未中奖的员工
+    // 一等奖、特等奖不带部长和新员工
+    if(processing_number > 12){
+        let count =await getStaffCount({
+            prize_id: 0,
+            is_manager:false,
+            is_fresh:false,
             company: company,
-            processing_number: processing_number,
-        })
+        });
+        count = count.total
+        for (let i = 0; i < count; i += 20) {
+            staffs = staffs.concat(await getStaffList({
+                prize_id: 0,
+                is_manager:false,
+                is_fresh:false,
+                company: company,
+            },i))
+        }
     }
-    //大奖阶段
-    else if(processing_number<=14){
-        //抽取所有未中奖的员工
+    else{
         let count =await getStaffCount({
             prize_id: 0,
             company: company,
@@ -265,22 +274,48 @@ app.get('/processing_staff/',async (req, res) => {
             staffs = staffs.concat(await getStaffList({
                 prize_id: 0,
                 company: company,
-          },i))
+            },i))
         }
     }
+    ////================================================
+    ////二等奖抽奖阶段，只有报名的才能参加
+    //if(processing_number<=12){
+    //    staffs = await getProcessingStaffList(
+    //        {
+    //        company: company,
+    //        processing_number: processing_number,
+    //    })
+    //}
+    ////大奖阶段
+    //else if(processing_number<=14){
+    //    //抽取所有未中奖的员工
+    //    let count =await getStaffCount({
+    //        prize_id: 0,
+    //        company: company,
+    //    });
+    //    count = count.total
+    //    for (let i = 0; i < count; i += 20) {
+    //        staffs = staffs.concat(await getStaffList({
+    //            prize_id: 0,
+    //            company: company,
+    //      },i))
+    //    }
+    //}
     //返场奖阶段
-    else{
-        //抽取所有未中奖的员工（两个公司的所有员工）
-        let count =await getStaffCount({
-            prize_id: 0,
-        });
-        count = count.total
-        for (let i = 0; i < count; i += 20) {
-            staffs = staffs.concat(await getStaffList({
-                prize_id: 0,
-          },i))
-        }
-    }
+    //else{
+    //    //抽取所有未中奖的员工（两个公司的所有员工）
+    //    let count =await getStaffCount({
+    //        prize_id: 0,
+    //    });
+    //    count = count.total
+    //    for (let i = 0; i < count; i += 20) {
+    //        staffs = staffs.concat(await getStaffList({
+    //            prize_id: 0,
+    //      },i))
+    //    }
+    //}
+
+    //================================================
     
     res.send(staffs)
 
@@ -564,11 +599,30 @@ app.post('/lottery/', async(req, res) => {
         }
     )
 
-    //二等奖以后不需要报名就可以参加
-    if(processing_number>12){
+    // 一等奖、特等奖不带部长和新员工
+    if(processing_number > 12){
+        let staffs = await db.collection('Staff').where({
+            _id:_.in(req.body.lottery_staffs)
+
+        }).get()
+
+        for(let i=0;i<staffs.data.length;i++){
+            await db.collection('ProcessingStaff').add({
+                _id:staffs.data[i].company + '_' + processing_number + '_' + staffs.data[i]._id,
+                avatar: staffs.data[i].avatar,
+                company: staffs.data[i].company,
+                staff_id: staffs.data[i]._id,
+                name: staffs.data[i].name,
+                processing_number:processing_number,
+                shooting:true,
+                winning:false,
+            })
+        }
+    }else{
         let staffs = await db.collection('Staff').where({
             _id:_.in(req.body.lottery_staffs)
         }).get()
+
         for(let i=0;i<staffs.data.length;i++){
             await db.collection('ProcessingStaff').add({
                 _id:staffs.data[i].company + '_' + processing_number + '_' + staffs.data[i]._id,
@@ -582,18 +636,41 @@ app.post('/lottery/', async(req, res) => {
             })
         }
     }
-    else{
-        await db.collection('ProcessingStaff').where(
-            {
-                staff_id: _.in(req.body.lottery_staffs),
-                processing_number: processing_number,
-            }
-        ).update(
-            {
-                shooting:true
-            }
-        )
-    }
+
+    //============================================
+
+    ////二等奖以后不需要报名就可以参加
+    //if(processing_number>12){
+    //    let staffs = await db.collection('Staff').where({
+    //        _id:_.in(req.body.lottery_staffs)
+    //    }).get()
+    //    for(let i=0;i<staffs.data.length;i++){
+    //        await db.collection('ProcessingStaff').add({
+    //            _id:staffs.data[i].company + '_' + processing_number + '_' + staffs.data[i]._id,
+    //            avatar: staffs.data[i].avatar,
+    //            company: staffs.data[i].company,
+    //            staff_id: staffs.data[i]._id,
+    //            name: staffs.data[i].name,
+    //            processing_number:processing_number,
+    //            shooting:true,
+    //            winning:false,
+    //        })
+    //    }
+    //}
+    //else{
+    //    await db.collection('ProcessingStaff').where(
+    //        {
+    //            staff_id: _.in(req.body.lottery_staffs),
+    //            processing_number: processing_number,
+    //        }
+    //    ).update(
+    //        {
+    //            shooting:true
+    //        }
+    //    )
+    //}
+
+    //===============================
 
     res.send({success:true})
 

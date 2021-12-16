@@ -347,11 +347,40 @@
     return currentTarget;
   };
 
+  var random_func = (function(){
+    var seed = (new Date()).getTime();
+    function r1(){
+      return Math.random();
+    }
+    function r2(){
+      return window.crypto.getRandomValues(new Uint32Array(1))[0];
+    }
+    function r3(){
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / (233280.0);
+    }
+    return function(number){
+      // 随机一次 + 一次
+      var rnd;
+      // 人数减少后，通过增加sin次数调整
+      if (number > 120){
+        rnd = r1()
+      }else if (number > 110 && number <= 120){
+        // 随机+sin
+        rnd = Math.sin(r1())
+      }else {
+        // 随机+2次sin
+        rnd = Math.sin(Math.sin(r1()))
+      }
+      return Math.ceil(rnd * number);
+    };
+  })();
+
   //使用选定的抽奖器抽取一个中奖用户
   var lotteryOnce = function(selector = 0){
     if (positionList <=0 ) return;
     // 随机抽取index
-    var targetIndex = Math.floor(Math.random() * positionList.length);
+    var targetIndex = Math.floor(random_func(positionList.length));
     //Math.random()>0.8? targetIndex =Math.floor(Math.random() * positionList.length): targetIndex =2;
     //去重，所有轮中无重复且当前轮无重复
     var winnerProfile = null;

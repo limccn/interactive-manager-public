@@ -351,7 +351,7 @@
   var lotteryOnce = function(selector = 0){
     if (positionList <=0 ) return;
     // 随机抽取index
-    var targetIndex = Math.floor(Math.random() * positionList.length);
+    //var targetIndex =  Math.floor(Math.random() * positionList.length);
     //Math.random()>0.8? targetIndex =Math.floor(Math.random() * positionList.length): targetIndex =2;
     //去重，所有轮中无重复且当前轮无重复
     var winnerProfile = null;

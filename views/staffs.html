@@ -214,9 +214,7 @@
                 html = html +  "<td>" + data[i]._id + "</td>";
                 html = html +  "<td>" + data[i].name + "</td>";
                 html = html +  "<td>"
-                if(data[i].avatar!=="" && data[i].avatar !== undefined){
-                    html = html +  "<image src='" + data[i].avatar + "' width='25px' >"
-                }
+                html = html +  "<image src='" + makeAvatarFromName(data[i].name) + "' width='25px' >"
                 html = html +  "</td>";
                 html = html +  "<td>"
                 if(data[i].is_bse){
